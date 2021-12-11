@@ -1,20 +1,25 @@
 package com.example
 
+import com.example.Locations.PersonLocations
 import io.ktor.application.*
 import io.ktor.http.*
+import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>) {
+    io.ktor.server.netty.EngineMain.main(args)
+}
 
 fun Application.module(testing: Boolean = false) {
-
+    install(Locations)
     routing {
 
         getCall()
         getCallWithParameters()
         getCallWithQueryParameters()
+        getCallWithLocations()
         //postCall()
     }
 }
@@ -42,6 +47,12 @@ fun Routing.getCallWithParameters(): Route {
             //call.respond("He is there.")
             call.respond(HttpStatusCode.OK, call.parameters["key"].toString())
         }
+    }
+}
+
+fun Routing.getCallWithLocations(): Route {
+    return get<PersonLocations> { person ->
+        call.respond(HttpStatusCode.OK, "${person.name} and ${person.age}")
     }
 }
 //fun Routing.postCall(): Route {
